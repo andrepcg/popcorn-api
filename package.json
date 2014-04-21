@@ -1,0 +1,24 @@
+{
+  "name": "poporn-api",
+  "version": "0.0.1",
+  "dependencies": {
+    "async": "*",
+    "cheerio": "*",
+    "node-restify-swagger": "*",
+    "node-restify-validation": "*",
+    "restify": "*",
+    "request": "*",
+    "sanitize-html": "*",
+    "memcached": "*",
+    "URIjs": "*",
+    "mongoose": "*"
+  },
+  "engines": {
+    "node": ">=0.10.x",
+    "npm": ">=1.2.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/popcorn-official/popcorn-api.git"
+  }
+}
