@@ -145,8 +145,7 @@ function refreshView(req, res) {
 }
 
 server.get('/shows', function(req, res) {
-    
-    db.allDocs({include_docs: false}, function(err, response) {
+    db.allDocs({include_docs: true}, function(err, response) {
         res.json(202, response.rows);
     });
 });
@@ -162,6 +161,7 @@ server.get('/show/:id', function(req, res) {
 var refreshEndpoint = {
     url: '/refresh'
 };
+
 server.get(refreshEndpoint, refreshView);
 server.listen(process.env.PORT || 5000, function() {
     console.log('%s listening at %s', server.name, server.url);
