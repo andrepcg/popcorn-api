@@ -146,23 +146,17 @@ function refreshView(req, res) {
 
 server.get('/shows', function(req, res) {
     
-    db.allDocs({include_docs: true}, function(err, response) {
-
-        res.json(202, response);
-
+    db.allDocs({include_docs: false}, function(err, response) {
+        res.json(202, response.rows);
     });
-    
 });
 
 server.get('/show/:id', function(req, res) {
     var id = req.params.id;
     console.log(id);
     db.get(id, function(err, response) {
-
         res.json(202, response);
-
     });
-    
 });
 
 var refreshEndpoint = {
