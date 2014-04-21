@@ -11,7 +11,7 @@
     "sanitize-html": "*",
     "memcached": "*",
     "URIjs": "*",
-    "mongoose": "*"
+    "pouchdb": "*"
   },
   "engines": {
     "node": ">=0.10.x",

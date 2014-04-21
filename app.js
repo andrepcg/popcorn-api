@@ -17,29 +17,13 @@ var SEARCH  =   "/search/";
 
 var TRAK_API_ENDPOINT = URI('http://api.trakt.tv/');
 var TRAK_API_KEY = '7b7b93f7f00f8e4b488dcb3c5baa81e1619bb074';
+var PouchDB = require('pouchdb');
 
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/local');
-
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-
-
-var showSchema = mongoose.Schema({
-        imdb: String,
-        title: String,
-        year: String,
-        rating: String,
-        images: {},
-        torrents: {}
-});
-
-var TVShow = mongoose.model('TVShow', showSchema);
+var db = new PouchDB('tv_shows');
 
 function getText($el) {
     return $el.text().trim();
 }
-
 
 function extractShowInfo(imdb, showUrl) {
 
@@ -71,7 +55,14 @@ function extractShowInfo(imdb, showUrl) {
         });
 
         var query = { imdb: imdb };
-        TVShow.update(query, { torrents: thisShow });
+        //TVShow.update(query, { torrents: thisShow });
+        db.get(imdb, function(err, currentDoc) {
+            var oldRev = currentDoc._rev;
+            delete currentDoc._rev;
+            delete currentDoc._id;
+            currentDoc.torrents = thisShow;
+            db.put(currentDoc, imdb, oldRev, function(err, response) { });
+        });
 
         console.log(thisShow);
     });
@@ -101,12 +92,12 @@ function extractTrakt(thisUrl, callback) {
 
             // ok we need all torrents
             //console.log(data);
-            
-            var show = new TVShow({ imdb: data.imdb_id, title: data.title, year: data.year, images: data.images, slug: slug});
-            console.log("New show added to DB : " + show);
-            extractShowInfo(show.imdb, thisUrl);
+            if (data.imdb_id) {
+                var show = db.put({ _id: data.imdb_id, title: data.title, year: data.year, images: data.images, slug: slug});
+                console.log("New show added to DB : " + data.imdb_id);
+                extractShowInfo(data.imdb_id, thisUrl);
+            }
 
-           
         }
 
     });
@@ -150,19 +141,26 @@ function refreshView(req, res) {
 
     });
 
-
-
     res.json(202, {success: true});
 }
 
 server.get('/shows', function(req, res) {
-    var userMap = {};
-    TVShow.find({}, function (err, shows) {
-        console.log(shows);
-         shows.forEach(function(show) {
-            userMap[show.imdb] = show;              
-         });
-         res.json(202, userMap);
+    
+    db.allDocs({include_docs: true}, function(err, response) {
+
+        res.json(202, response);
+
+    });
+    
+});
+
+server.get('/show/:id', function(req, res) {
+    var id = req.params.id;
+    console.log(id);
+    db.get(id, function(err, response) {
+
+        res.json(202, response);
+
     });
     
 });
@@ -173,4 +171,7 @@ var refreshEndpoint = {
 server.get(refreshEndpoint, refreshView);
 server.listen(process.env.PORT || 5000, function() {
     console.log('%s listening at %s', server.name, server.url);
+
+    // we start a first refresh
+    //refreshView(false,false);
 });
