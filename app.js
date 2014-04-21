@@ -19,6 +19,8 @@ var TRAK_API_ENDPOINT = URI('http://api.trakt.tv/');
 var TRAK_API_KEY = '7b7b93f7f00f8e4b488dcb3c5baa81e1619bb074';
 
 var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/local');
+
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
@@ -153,29 +155,22 @@ function refreshView(req, res) {
     res.json(202, {success: true});
 }
 
-function showsViews(req, res) {
-    shows = [];
-    console.log(TVShow);
-    TVShow.find(function (err, show) {
-      if (err) return console.error(err);
-      shows.push(show);
-      console.log("SHOW:" + show);
-    })
-    console.log(shows);
-    res.json(202, JSON.stringify(shows));    
-}
+server.get('/shows', function(req, res) {
+    var userMap = {};
+    TVShow.find({}, function (err, shows) {
+        console.log(shows);
+         shows.forEach(function(show) {
+            userMap[show.imdb] = show;              
+         });
+         res.json(202, userMap);
+    });
+    
+});
 
 var refreshEndpoint = {
     url: '/refresh'
 };
-
-var showsEndpoint = {
-    url: '/shows'
-};
-
 server.get(refreshEndpoint, refreshView);
-server.get(showsEndpoint, showsViews);
-
 server.listen(process.env.PORT || 5000, function() {
     console.log('%s listening at %s', server.name, server.url);
 });
