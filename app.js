@@ -6,7 +6,7 @@ var cheerio = require('cheerio');
 var request = require('request');
 var sanitizeHtml = require('sanitize-html');
 var URI = require('URIjs');
-var eztv = require('eztv_api_x');
+var eztv = require('eztv_api');
 
 var server = require('./server');
 var utils = require('./lib/utils');
