@@ -113,7 +113,7 @@ function refreshView() {
     var allShows = [];
 
     for(var provider in providers) {
-        provider.getAllShows(function(err, shows) {
+        providers[provider].getAllShows(function(err, shows) {
             if(err) return console.error(err);
             allShows.push(shows)
         });
