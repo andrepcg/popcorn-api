@@ -1,6 +1,6 @@
 # popocorn-api
 
-Scrape listings for eztv
+Scrape torrents from eztv and generate a local database accessible with an api compatible with popcorn time.
 
 
 ## Installation
@@ -11,8 +11,22 @@ Scrape listings for eztv
 
 ## Sample Usage
 
-### Refresh a eztv's listings
+We automatically generate the DB on start and we resync with eztv everyday at 00:00
 
-    curl 'http://localhost:5000/refresh'
+### Access api
 
+	#### View all shows
+    ```
+    http://localhost:5000/shows/[page]
+    ```
+
+	#### Search
+    ```
+    http://localhost:5000/search/[keyword]
+    ```
+
+	#### Show detail
+    ```
+    http://localhost:5000/show/[imdb_id]
+    ```
     
