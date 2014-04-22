@@ -12,6 +12,7 @@
     "memcached": "*",
     "URIjs": "*",
     "pouchdb": "*",
+    "eztv_api_x" : ">=0.0.4",
     "cron": "*"
   },
   "engines": {

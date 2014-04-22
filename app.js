@@ -6,14 +6,12 @@ var cheerio = require('cheerio');
 var request = require('request');
 var sanitizeHtml = require('sanitize-html');
 var URI = require('URIjs');
+var eztv = require('eztv_api_x');
 
 var server = require('./server');
 var utils = require('./lib/utils');
 
-var BASE_URL    =   "http://eztv.it";
-var SHOWLIST    =   "/showlist/";
-var LATEST  =   "/sort/100/";
-var SEARCH  =   "/search/";
+var providers = [eztv];
 
 var TRAK_API_ENDPOINT = URI('http://api.trakt.tv/');
 var TRAK_API_KEY = '7b7b93f7f00f8e4b488dcb3c5baa81e1619bb074';
@@ -25,42 +23,14 @@ function getText($el) {
     return $el.text().trim();
 }
 
-function extractShowInfo(imdb, showUrl) {
+function extractShowInfo(imdb, show) {
 
     console.log("extractShowInfo " + showUrl);
     var thisShow = {};
 
-    request(BASE_URL + showUrl, function(error, response, html){
-        var $$ = cheerio.load(html);
-        $$('tr.forum_header_border').each(function(){
-
-            var showStructure = {};
-            var showDetails = [];
-            var episode_elements = $$(this);
-            // title
-            var title = episode_elements.children().eq(1).children().attr('title');
-            
-
-            if (title && title.indexOf("x264") > 0) {
-                var seasonFound = title.match(/S([0-9]+)E([0-9]+)/);
-
-                if (seasonFound && seasonFound.length > 1) {
-                    var saison = seasonFound[1];
-                    var episode = seasonFound[2];
-                    if (!thisShow[saison]) thisShow[saison] = {};
-
-                    var links = episode_elements.children().eq(2).first().find('a').first().attr('href');
-
-                    var episodeStruct = {};
-                    episodeStruct.url = links;
-                    episodeStruct.seeds = 0;
-                    episodeStruct.peers = 0;
-
-                    thisShow[saison][episode] = episodeStruct;
-                }
-            }
-        });
-
+    eztv.getAllEpisodes(show, function(err, data) {
+        if(err) return console.error(err);
+        thisShow = data;
         var query = { imdb: imdb };
         //TVShow.update(query, { torrents: thisShow });
         db.get(imdb, function(err, currentDoc) {
@@ -72,9 +42,9 @@ function extractShowInfo(imdb, showUrl) {
     });
 }
 
-function extractTrakt(thisUrl, callback) {
+function extractTrakt(show, callback) {
 
-    var slug = thisUrl.match(/\/shows\/(.*)\/(.*)\//)[2];
+    var slug = show.slug;
 
     console.log("extractTrakt " + slug);
     var uri = TRAK_API_ENDPOINT.clone()
@@ -96,19 +66,20 @@ function extractTrakt(thisUrl, callback) {
 
             // ok we need all torrents
             //console.log(data);
+
             if (data && data.imdb_id) {
 
                 var new_data = { 
-                    _id: data.imdb_id, 
-                    title: data.title, 
-                    year: data.year, 
-                    images: data.images, 
-                    slug: slug, 
-                    synopsis: data.overview, 
-                    runtime: data.runtime, 
-                    rating: 0, 
-                    genres: data.genres, 
-                    country: data.country, 
+                    _id: data.imdb_id,
+                    title: data.title,
+                    year: data.year,
+                    images: data.images,
+                    slug: slug,
+                    synopsis: data.overview,
+                    runtime: data.runtime,
+                    rating: 0,
+                    genres: data.genres,
+                    country: data.country,
                     network: data.network
                 };
 
@@ -123,6 +94,7 @@ function extractTrakt(thisUrl, callback) {
                 // here we go this show is interesting,
                 // we can start extracting eztv
                 extractShowInfo(data.imdb_id, thisUrl);
+
             }
 
         }
@@ -134,36 +106,21 @@ function extractTrakt(thisUrl, callback) {
     
 }
 
+
+
 function refreshView() {
-    var allSlugs = [];
-    var allUrls = [];
-    request.get(BASE_URL + SHOWLIST, function getShowResponse(err, response, body) {
-        console.log('Processing:', BASE_URL + SHOWLIST);
 
-        if (err || response.statusCode !== 200) {
-            console.error('Could not fetch ' + BASE_URL + SHOWLIST + '\n', err);
-        } else {
+    var allShows = [];
 
-            var $ = cheerio.load(body);
-            $('.thread_link').each(function(){
-                var entry = $(this);
-                var thisShow = {};
-                var showUrl = entry.first().attr('href');
-                allUrls.push(showUrl);
+    for(var provider in providers) {
+        provider.getAllShows(function(err, shows) {
+            if(err) return console.error(err);
+            allShows.push(shows)
+        });
+    }
 
-            });
+    async.map(allShows ,extractTrakt);
 
-            //async.map(allUrls ,extractShowInfo, function showListDone(err, result) {
-
-            //    console.log(result);
-                //process.exit();
-
-            //});
-
-            async.map(allUrls ,extractTrakt);            
-        }        
-
-    });
 }
 
 server.get('/shows/:page', function(req, res) {
