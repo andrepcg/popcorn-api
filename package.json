@@ -11,8 +11,7 @@
     "sanitize-html": "*",
     "memcached": "*",
     "URIjs": "*",
-    "pouchdb": "*",
-    "pouchdb-search": "*"
+    "pouchdb": "*"
   },
   "engines": {
     "node": ">=0.10.x",

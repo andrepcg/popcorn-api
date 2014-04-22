@@ -50,7 +50,13 @@ function extractShowInfo(imdb, showUrl) {
                     if (!thisShow[saison]) thisShow[saison] = {};
 
                     var links = episode_elements.children().eq(2).first().find('a').first().attr('href');
-                    thisShow[saison][episode] = links;
+
+                    var episodeStruct = {};
+                    episodeStruct.url = links;
+                    episodeStruct.seeds = 0;
+                    episodeStruct.peers = 0;
+
+                    thisShow[saison][episode] = episodeStruct;
                 }
             }
         });
@@ -65,7 +71,6 @@ function extractShowInfo(imdb, showUrl) {
             db.put(currentDoc, imdb, oldRev, function(err, response) { });
         });
 
-        console.log(thisShow);
     });
 }
 
@@ -175,7 +180,7 @@ server.get('/search/:search', function(req, res) {
 
         res.json(202, matches);
       }
-      
+
     db.query({map: map}, {reduce: false}, filter);
 
 });
