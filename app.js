@@ -6,7 +6,7 @@ var cheerio = require('cheerio');
 var request = require('request');
 var sanitizeHtml = require('sanitize-html');
 var URI = require('URIjs');
-var eztv = require('eztv_api');
+var eztv = require('eztv_api_x');
 
 var server = require('./server');
 var utils = require('./lib/utils');
@@ -25,7 +25,7 @@ function getText($el) {
 
 function extractShowInfo(imdb, show) {
 
-    console.log("extractShowInfo " + showUrl);
+    console.log("extractShowInfo " + show.show);
     var thisShow = {};
 
     eztv.getAllEpisodes(show, function(err, data) {
@@ -93,7 +93,7 @@ function extractTrakt(show, callback) {
 
                 // here we go this show is interesting,
                 // we can start extracting eztv
-                extractShowInfo(data.imdb_id, thisUrl);
+                extractShowInfo(data.imdb_id, show);
 
             }
 
@@ -112,14 +112,19 @@ function refreshView() {
 
     var allShows = [];
 
-    for(var provider in providers) {
-        providers[provider].getAllShows(function(err, shows) {
+    async.each(providers, function(provider, cb) {
+        provider.getAllShows(function(err, shows) {
             if(err) return console.error(err);
-            allShows.push(shows)
+            allShows.push(shows);
+            cb();
         });
-    }
+    }, function (error) {
+        if(error) return console.error(error);
+        console.log(allShows[0]);
+        async.map(allShows[0] ,extractTrakt);
+    });
 
-    async.map(allShows ,extractTrakt);
+
 
 }
 
