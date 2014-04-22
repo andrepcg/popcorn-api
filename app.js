@@ -154,9 +154,34 @@ server.get('/shows/:page', function(req, res) {
     });
 });
 
+server.get('/search/:search', function(req, res) {
+ 
+    var keywords = req.params.search.toLowerCase();    
+     function map(doc) {
+        if(doc.title) {
+          emit(doc.title.toLowerCase(), doc);
+        }
+      }
+
+      function filter(err, response) {
+        if (err) return callback(err);
+
+        var matches = [];
+        response.rows.forEach(function(showInfo) {
+          if (showInfo.key.indexOf(keywords) > -1) {
+            matches.push(showInfo);
+          }
+        });
+
+        res.json(202, matches);
+      }
+      
+    db.query({map: map}, {reduce: false}, filter);
+
+});
+
 server.get('/show/:id', function(req, res) {
     var id = req.params.id;
-    console.log(id);
     db.get(id, function(err, response) {
         res.json(202, response);
     });
