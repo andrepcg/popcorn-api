@@ -35,10 +35,8 @@ function extractShowInfo(imdb, show) {
         //TVShow.update(query, { torrents: thisShow });
         db.get(imdb, function(err, currentDoc) {
             var oldRev = currentDoc._rev;
-            delete currentDoc._rev;
-            delete currentDoc._id;
             currentDoc.torrents = thisShow;
-            db.put(currentDoc, imdb, oldRev, function(err, response) { });
+            db.put(currentDoc);
         });
 
     });
@@ -68,10 +66,35 @@ function extractTrakt(show, callback) {
 
             // ok we need all torrents
             //console.log(data);
-            if (data.imdb_id) {
-                var show = db.put({ _id: data.imdb_id, title: data.title, year: data.year, images: data.images, slug: slug, synopsis: data.overview, synopsis: data.overview, runtime: data.runtime, rating: 0, genres: data.genres, country: data.country, network: data.network});
-                console.log("New show added to DB : " + data.imdb_id);
-                extractShowInfo(data.imdb_id, show);
+
+            if (data && data.imdb_id) {
+
+                var new_data = { 
+                    _id: data.imdb_id,
+                    title: data.title,
+                    year: data.year,
+                    images: data.images,
+                    slug: slug,
+                    synopsis: data.overview,
+                    runtime: data.runtime,
+                    rating: 0,
+                    genres: data.genres,
+                    country: data.country,
+                    network: data.network
+                };
+
+                db.get(data.imdb_id, function(err, currentDoc) {
+                    // make sure to add new show only
+                    if (err) {
+                        var show = db.put(new_data);
+                        console.log("New show added to DB : " + data.imdb_id);
+                    }
+                });
+
+                // here we go this show is interesting,
+                // we can start extracting eztv
+                extractShowInfo(data.imdb_id, thisUrl);
+
             }
 
         }
@@ -84,9 +107,9 @@ function extractTrakt(show, callback) {
 }
 
 
-function refreshView(req, res) {
 
-    console.log('\n' + new Date(), '[' + req.method + ']', req.url);
+function refreshView() {
+
     var allShows = [];
 
     for(var provider in providers) {
@@ -98,7 +121,6 @@ function refreshView(req, res) {
 
     async.map(allShows ,extractTrakt);
 
-    res.json(202, {success: true});
 }
 
 server.get('/shows/:page', function(req, res) {
@@ -143,14 +165,24 @@ server.get('/show/:id', function(req, res) {
     });
 });
 
-var refreshEndpoint = {
-    url: '/refresh'
-};
 
-server.get(refreshEndpoint, refreshView);
 server.listen(process.env.PORT || 5000, function() {
     console.log('%s listening at %s', server.name, server.url);
-
-    // we start a first refresh
-    //refreshView(false,false);
+    refreshView();
 });
+
+
+// cronjob
+try {
+    var CronJob = require('cron').CronJob;
+    var job = new CronJob('00 00 00 * * *', function(){
+        refreshView();
+      }, function () {
+        // This function is executed when the job stops
+      },
+      true
+    );
+    console.log("Cron job started");
+} catch(ex) {
+    console.log("cron pattern not valid");
+}
