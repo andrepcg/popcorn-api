@@ -120,7 +120,6 @@ function refreshView() {
         });
     }, function (error) {
         if(error) return console.error(error);
-        console.log(allShows[0]);
         async.map(allShows[0] ,extractTrakt);
     });
 
