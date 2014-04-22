@@ -144,8 +144,11 @@ function refreshView(req, res) {
     res.json(202, {success: true});
 }
 
-server.get('/shows', function(req, res) {
-    db.allDocs({include_docs: true}, function(err, response) {
+server.get('/shows/:page', function(req, res) {
+    var page = req.params.page-1;    
+    var byPage = 30;
+    var offset = page*byPage;
+    db.allDocs({include_docs: true, skip : offset, limit : byPage}, function(err, response) {
         res.json(202, response.rows);
     });
 });
