@@ -41,13 +41,14 @@ function extractShowInfo(imdb, showUrl) {
             var title = episode_elements.children().eq(1).children().attr('title');
             
 
-            if (title) {
+            if (title && title.indexOf("x264") > 0) {
                 var seasonFound = title.match(/S([0-9]+)E([0-9]+)/);
 
                 if (seasonFound && seasonFound.length > 1) {
                     var saison = seasonFound[1];
                     var episode = seasonFound[2];
                     if (!thisShow[saison]) thisShow[saison] = {};
+
                     var links = episode_elements.children().eq(2).first().find('a').first().attr('href');
                     thisShow[saison][episode] = links;
                 }
