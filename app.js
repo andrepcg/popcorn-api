@@ -93,7 +93,7 @@ function extractTrakt(thisUrl, callback) {
             // ok we need all torrents
             //console.log(data);
             if (data.imdb_id) {
-                var show = db.put({ _id: data.imdb_id, title: data.title, year: data.year, images: data.images, slug: slug});
+                var show = db.put({ _id: data.imdb_id, title: data.title, year: data.year, images: data.images, slug: slug, synopsis: data.overview, synopsis: data.overview, runtime: data.runtime, rating: 0});
                 console.log("New show added to DB : " + data.imdb_id);
                 extractShowInfo(data.imdb_id, thisUrl);
             }
