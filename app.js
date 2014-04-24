@@ -51,19 +51,17 @@ function extractShowInfo(show, callback) {
                         
                         // 01 , 02 , 03 or 14, 15 etc (2 numbers)
 
-                        var tempseason = ("0" + episodeData.season).slice(-2).toString();
                         var tempepisode = ("0" + episodeData.episode).slice(-2).toString();
-
-                        if (data[tempseason] & typeof(data[tempseason][tempepisode]) != 'undefined') {
+                        if (typeof(data[season]) != 'undefined' & typeof(data[season][tempepisode]) != 'undefined') {
 
                             // hardcode the 720 for this source
                             // TODO: Should add it from eztv_x
-                            data[tempseason][tempepisode].format = "720";
+                            data[season][tempepisode].format = "720";
                             thisEpisode = {
                                 season: episodeData.season,
                                 episode: episodeData.episode,
                                 title: episodeData.title,
-                                torrents: data[tempseason][tempepisode]
+                                torrents: data[season][tempepisode]
                             };
 
                             thisEpisodes.push(thisEpisode);
