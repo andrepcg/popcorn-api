@@ -21,17 +21,6 @@ var TTL = 1000 * 60 * 60 * 24;
  *  EXTRACT FUNCTIONS
  */
 
-var test = { show: 'Youngers',
-  id: '824',
-  slug: 'youngers',
-  imdb: 'tt2526046' };
-
-extractShowInfo(
-test, function() {
-    process.exit();
-}
-);
-
 
 function extractShowInfo(show, callback) {
 
@@ -65,8 +54,10 @@ function extractShowInfo(show, callback) {
                         var tempseason = ("0" + episodeData.season).slice(-2).toString();
                         var tempepisode = ("0" + episodeData.episode).slice(-2).toString();
 
-                        if (typeof(data[tempseason][tempepisode]) != 'undefined') {
+                        if (data[tempseason] & typeof(data[tempseason][tempepisode]) != 'undefined') {
 
+                            // hardcode the 720 for this source
+                            // TODO: Should add it from eztv_x
                             data[tempseason][tempepisode].format = "720";
                             thisEpisode = {
                                 season: episodeData.season,
@@ -88,6 +79,7 @@ function extractShowInfo(show, callback) {
                 console.log("Error:", err)
             }
         }
+
 
     });
 }
