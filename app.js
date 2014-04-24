@@ -70,7 +70,13 @@ function extractShowInfo(show, callback) {
 
                     }
 
-                    db.tvshows.update({ imdb_id: show.imdb }, { $set: { episodes: thisEpisodes, last_updated: +new Date() } });
+                    // Only change "lastUpdated" date if there are new episodes
+                    db.tvshows.findOne({imdb_id: show.imdb}, function(err, show) {
+                        if(err) return console.error(err);
+                        if(show.episodes != thisEpisodes) {
+                            db.tvshows.update({ _id: show._id }, { $set: { episodes: thisEpisodes, last_updated: +new Date() } });
+                        }
+                    })
 
                 });
             } catch (err) {
