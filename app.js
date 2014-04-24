@@ -150,6 +150,13 @@ server.get('/shows/last_updated', function(req, res) {
     });
 });
 
+server.get('/shows/updated/:since', fuction(req, res) {
+    var since = req.params.since
+    db.tvshows.find({last_updated : {$gt: since}}, function(err, docs) {
+        res.json(202, docs);
+    })
+})
+
 server.get('/shows/last_updated/:page', function(req, res) {
     var page = req.params.page-1;    
     var byPage = 30;
