@@ -152,7 +152,7 @@ server.get('/shows/last_updated', function(req, res) {
 
 server.get('/shows/updated/:since', function(req, res) {
     var since = req.params.since
-    db.tvshows.find({last_updated : {$gt: since}}, function(err, docs) {
+    db.tvshows.find({last_updated : {$gt: parseInt(since)}}, function(err, docs) {
         res.json(202, docs);
     })
 })
