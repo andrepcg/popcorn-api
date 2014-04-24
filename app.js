@@ -58,6 +58,7 @@ function extractShowInfo(show, callback) {
                             // TODO: Should add it from eztv_x
                             data[season][tempepisode].format = "720";
                             thisEpisode = {
+                                tvdb_id: episodeData.tvdb_id,
                                 season: episodeData.season,
                                 episode: episodeData.episode,
                                 title: episodeData.title,
