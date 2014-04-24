@@ -101,7 +101,7 @@ function extractTrakt(show, callback) {
                     slug: slug,
                     synopsis: data.overview,
                     runtime: data.runtime,
-                    rating: 0,
+                    rating: data.ratings.percentage,
                     genres: data.genres,
                     country: data.country,
                     network: data.network,
