@@ -62,7 +62,7 @@ function extractShowInfo(show, callback) {
                                 season: episodeData.season,
                                 episode: episodeData.episode,
                                 title: episodeData.title,
-                                torrents: [];
+                                torrents: []
                             };
                             thisEpisodes.torrents.push(data[season][tempepisode]);
                             thisEpisodes.push(thisEpisode);
