@@ -102,6 +102,7 @@ function extractTrakt(show, callback) {
                 // ok show exist
                 var new_data = { 
                     imdb_id: data.imdb_id,
+                    tvdb_id: data.tvdb_id,
                     title: data.title,
                     year: data.year,
                     images: data.images,
