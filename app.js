@@ -4,24 +4,23 @@ var path = require('path');
 var async = require('async');
 var cheerio = require('cheerio');
 var request = require('request');
-var sanitizeHtml = require('sanitize-html');
 var URI = require('URIjs');
 var eztv = require('eztv_api_x');
 
 var server = require('./server');
-var utils = require('./lib/utils');
-
 var providers = [eztv];
 
 var TRAK_API_ENDPOINT = URI('http://api.trakt.tv/');
 var TRAK_API_KEY = '7b7b93f7f00f8e4b488dcb3c5baa81e1619bb074';
-var PouchDB = require('pouchdb');
 
-var db = new PouchDB('tv_shows');
+var db = require('./database');
 
-function getText($el) {
-    return $el.text().trim();
-}
+// TTL for torrent link (24 hrs ?)
+var TTL = 1000 * 60 * 60 * 24;
+
+/*
+ *  EXTRACT FUNCTIONS
+ */
 
 function extractShowInfo(imdb, show) {
 
@@ -32,13 +31,8 @@ function extractShowInfo(imdb, show) {
         if(err) return console.error(err);
         thisShow = data;
         var query = { imdb: imdb };
-        //TVShow.update(query, { torrents: thisShow });
-        db.get(imdb, function(err, currentDoc) {
-            var oldRev = currentDoc._rev;
-            currentDoc.torrents = thisShow;
-            db.put(currentDoc);
-        });
-
+        // upate with right torrent link
+        db.tvshows.update({ imdb_id: imdb }, { $set: { torrents: thisShow, last_updated: +new Date() } });
     });
 }
 
@@ -69,8 +63,10 @@ function extractTrakt(show, callback) {
 
             if (data && data.imdb_id) {
 
+                // TODO: Extract rating from IMDB
+
                 var new_data = { 
-                    _id: data.imdb_id,
+                    imdb_id: data.imdb_id,
                     title: data.title,
                     year: data.year,
                     images: data.images,
@@ -80,38 +76,41 @@ function extractTrakt(show, callback) {
                     rating: 0,
                     genres: data.genres,
                     country: data.country,
-                    network: data.network
+                    network: data.network,
+                    air_day: data.air_day,
+                    air_time: data.air_time
                 };
 
-                db.get(data.imdb_id, function(err, currentDoc) {
-                    // make sure to add new show only
-                    if (err) {
-                        var show = db.put(new_data);
-                        console.log("New show added to DB : " + data.imdb_id);
-                    }
+                db.tvshows.find({ imdb_id: data.imdb_id }, function (err, docs) {
+                  
+                  if (docs.length == 0) {
+
+                        // brand new show, so we need to extract it from scratch
+                        db.tvshows.insert(new_data, function(err, newDocs) {
+                            extractShowInfo(data.imdb_id, show);
+                        });
+
+                  } else {
+
+                    // compare with current time
+                    var now = +new Date();
+                    // ok it already exist, we'll check the TTL of the cache
+                    docs.forEach(function(showInfo) {
+                        if ( (now-showInfo.last_updated) > TTL ) {
+                            extractShowInfo(data.imdb_id, show);
+                        }
+                    });
+                  }
+
                 });
-
-                // here we go this show is interesting,
-                // we can start extracting eztv
-                extractShowInfo(data.imdb_id, show);
-
             }
-
         }
 
     });
-
-    // ok we extract the torrents for this show
-
-    
 }
 
-
-
-function refreshView() {
-
+function refreshDatabase() {
     var allShows = [];
-
     async.each(providers, function(provider, cb) {
         provider.getAllShows(function(err, shows) {
             if(err) return console.error(err);
@@ -122,57 +121,72 @@ function refreshView() {
         if(error) return console.error(error);
         async.map(allShows[0] ,extractTrakt);
     });
-
-
-
 }
+
+/*
+ *  API ROUTES
+ */
+
+server.get('/shows', function(req, res) {
+    var byPage = 30;
+    db.tvshows.find({}).sort({ year: -1 }).limit(byPage).exec(function (err, docs) {
+      res.json(202, docs);
+    });
+});
 
 server.get('/shows/:page', function(req, res) {
     var page = req.params.page-1;    
     var byPage = 30;
     var offset = page*byPage;
-    db.allDocs({include_docs: true, skip : offset, limit : byPage}, function(err, response) {
-        res.json(202, response.rows);
+    db.tvshows.find({}).sort({ year: -1 }).skip(offset).limit(byPage).exec(function (err, docs) {
+      res.json(202, docs);
     });
 });
 
-server.get('/search/:search', function(req, res) {
- 
-    var keywords = req.params.search.toLowerCase();    
-     function map(doc) {
-        if(doc.title) {
-          emit(doc.title.toLowerCase(), doc);
-        }
-      }
+server.get('/shows/last_updated', function(req, res) { 
+    var byPage = 30;
+    db.tvshows.find({}).sort({ last_updated: -1 }).limit(byPage).exec(function (err, docs) {
+      res.json(202, docs);
+    });
+});
 
-      function filter(err, response) {
-        if (err) return callback(err);
+server.get('/shows/last_updated/:page', function(req, res) {
+    var page = req.params.page-1;    
+    var byPage = 30;
+    var offset = page*byPage;
+    db.tvshows.find({}).sort({ last_updated: -1 }).skip(offset).limit(byPage).exec(function (err, docs) {
+      res.json(202, docs);
+    });
+});
 
-        var matches = [];
-        response.rows.forEach(function(showInfo) {
-          if (showInfo.key.indexOf(keywords) > -1) {
-            matches.push(showInfo);
-          }
-        });
+server.get('/shows/search/:search', function(req, res) {
+    var byPage = 30;
+    var keywords = new RegExp(req.params.search.toLowerCase(),"gi");
+    db.tvshows.find({title: keywords}).sort({ last_updated: -1 }).limit(byPage).exec(function (err, docs) {
+      res.json(202, docs);
+    });
+});
 
-        res.json(202, matches);
-      }
-
-    db.query({map: map}, {reduce: false}, filter);
-
+server.get('/shows/search/:search/:page', function(req, res) {
+    var page = req.params.page-1;
+    var byPage = 30;
+    var offset = page*byPage;    
+    var keywords = new RegExp(req.params.search.toLowerCase(),"gi");
+    db.tvshows.find({title: keywords}).sort({ last_updated: -1 }).skip(offset).limit(byPage).exec(function (err, docs) {
+      res.json(202, docs);
+    });
 });
 
 server.get('/show/:id', function(req, res) {
-    var id = req.params.id;
-    db.get(id, function(err, response) {
-        res.json(202, response);
+    db.tvshows.find({imdb_id: req.params.id}).limit(1).exec(function (err, docs) {
+        if (docs.length > 0 ) docs = docs[0];
+        res.json(202, docs);
     });
 });
 
-
 server.listen(process.env.PORT || 5000, function() {
     console.log('%s listening at %s', server.name, server.url);
-    refreshView();
+    refreshDatabase();
 });
 
 
@@ -180,7 +194,7 @@ server.listen(process.env.PORT || 5000, function() {
 try {
     var CronJob = require('cron').CronJob;
     var job = new CronJob('00 00 00 * * *', function(){
-        refreshView();
+        refreshDatabase();
       }, function () {
         // This function is executed when the job stops
       },

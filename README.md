@@ -16,11 +16,16 @@ We automatically generate the DB on start and we resync with eztv everyday at 00
 ### Access api
 
 #### View all shows
+ 	http://localhost:5000/shows
  	http://localhost:5000/shows/[page]
 
-#### Search
-	http://localhost:5000/search/[keyword]
+#### View shows with latest updated torrent link
+ 	http://localhost:5000/shows/last_updated
+ 	http://localhost:5000/shows/last_updated/[page]
 
+#### Search
+	http://localhost:5000/shows/search/[keyword]
+	http://localhost:5000/shows/search/[keyword]/[page]
 
 #### Show detail
 	http://localhost:5000/show/[imdb_id]
