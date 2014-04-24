@@ -9,8 +9,9 @@
     "restify": "*",
     "request": "*",
     "nedb": "~0.10.5",
-    "eztv_api_x" : ">=0.0.6",
-    "cron": "*"
+    "eztv_api_x": ">=0.0.6",
+    "cron": "*",
+    "trakt": "0.0.6"
   },
   "engines": {
     "node": ">=0.10.x",
