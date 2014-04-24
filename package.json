@@ -8,9 +8,6 @@
     "node-restify-validation": "*",
     "restify": "*",
     "request": "*",
-    "sanitize-html": "*",
-    "memcached": "*",
-    "URIjs": "*",
     "nedb": "~0.10.5",
     "eztv_api_x" : ">=0.0.6",
     "cron": "*"
