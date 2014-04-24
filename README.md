@@ -32,7 +32,7 @@ We automatically generate the DB on start and we resync with eztv everyday at 00
 #### Show detail
 	http://localhost:5000/show/[imdb_id]
 
-### View shows updated since a time
+#### View shows updated since a time
 	http://localhost:5000/shows/updated/[since]
 
 	
