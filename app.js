@@ -32,9 +32,9 @@ function extractShowInfo(show, callback) {
     var imdb = show.imdb;
 
     eztv.getAllEpisodes(show, function(err, data) {
-        if(err) return console.error(err);
         thisShow = data;
 
+        console.log("Looking for "+ show.show);
 
         // upate with right torrent link
         for(var season in data){
@@ -64,7 +64,7 @@ function extractShowInfo(show, callback) {
                                 title: episodeData.title,
                                 torrents: []
                             };
-                            thisEpisodes.torrents.push(data[season][tempepisode]);
+                            thisEpisode.torrents.push(data[season][tempepisode]);
                             thisEpisodes.push(thisEpisode);
 
                         }
@@ -75,15 +75,25 @@ function extractShowInfo(show, callback) {
                     db.tvshows.findOne({imdb_id: show.imdb}, function(err, show) {
                         if(err) return console.error(err);
                         if(show.episodes != thisEpisodes) {
-                            db.tvshows.update({ _id: show._id }, { $set: { episodes: thisEpisodes, last_updated: +new Date() } });
+                            db.tvshows.update({ _id: show._id }, 
+                                { $set: { episodes: thisEpisodes, last_updated: +new Date()}},
+                                function(err, show) {
+                                    callback(err, null);
+                                });
                         }
-                    })
+                        else {
+                            callback(null, show);
+                        }
+                    });
 
                 });
             } catch (err) {
                 console.log("Error:", err)
+                callback(null, show);
             }
         }
+
+        callback(null, show);
 
 
     });
@@ -93,61 +103,64 @@ function extractTrakt(show, callback) {
 
     var slug = show.slug;
 
-    console.log("Extracting "+ show.slug);
+    console.log("Extracting "+ show.show);
+    db.tvshows.findOne({slug: show.slug}, function(err, doc){
+        if(err || !doc) {
+            console.log("New Show");
+            try {
+                trakt.request('show', 'summary', {title: show.slug}, function(err, data) {
+                if (!err && data) {
 
-    try {
-        trakt.request('show', 'summary', {title: slug}, function(err, data) {
-            if (!err && data) {
-
-                // ok show exist
-                var new_data = { 
-                    imdb_id: data.imdb_id,
-                    tvdb_id: data.tvdb_id,
-                    title: data.title,
-                    year: data.year,
-                    images: data.images,
-                    slug: slug,
-                    synopsis: data.overview,
-                    runtime: data.runtime,
-                    rating: data.ratings.percentage,
-                    genres: data.genres,
-                    country: data.country,
-                    network: data.network,
-                    air_day: data.air_day,
-                    air_time: data.air_time
-                };
-                if (data.imdb_id){
-                    db.tvshows.find({ imdb_id: data.imdb_id }, function (err, docs) {
-                          
-                        if (docs.length == 0) {
-
-                            // brand new show, so we need to extract it from scratch
-                            db.tvshows.insert(new_data, function(err, newDocs) {
-                                show.imdb = data.imdb_id;
-                                extractShowInfo(show);
-                            });
-
-                        } else {
-
-                            // compare with current time
-                            var now = +new Date();
-                            // ok it already exist, we'll check the TTL of the cache
-                            docs.forEach(function(showInfo) {
-                                if ( (now-showInfo.last_updated) > TTL ) {
-                                    show.imdb = data.imdb_id;
-                                    extractShowInfo(show);
-                                }
-                            });
-                        }
-
+                    // ok show exist
+                    var new_data = { 
+                        imdb_id: data.imdb_id,
+                        tvdb_id: data.tvdb_id,
+                        title: data.title,
+                        year: data.year,
+                        images: data.images,
+                        slug: slug,
+                        synopsis: data.overview,
+                        runtime: data.runtime,
+                        rating: data.ratings.percentage,
+                        genres: data.genres,
+                        country: data.country,
+                        network: data.network,
+                        air_day: data.air_day,
+                        air_time: data.air_time
+                    };
+                    db.tvshows.insert(new_data, function(err, newDocs) {
+                        show.imdb = data.imdb_id;
+                        extractShowInfo(show, function(err, show) {
+                            callback(err, show);
+                        });
                     });
+                } 
+                else {
+                    callback(null, show);
                 }
-            }  
-        })
-    } catch (err) {
-        console.log("Error:", err)
+            })
+        } catch (err) {
+            console.log("Error:", err)
+            callback(null, show);
+        }
     }
-
+    else {
+        console.log("Existing Show: Checking TTL");
+        // compare with current time
+        var now = +new Date();
+        if ( (now - doc.last_updated) > TTL ) {
+            console.log("TTL expired, updating info");
+            show.imdb = doc.imdb_id;
+            //TODO: Change this to just get new rating or something
+            extractShowInfo(show, function(err, show) {
+                callback(err, show);
+            });
+        }
+        else {
+            callback(null, show);
+        }
+    }
+});
 }
 
 function refreshDatabase() {
@@ -160,7 +173,7 @@ function refreshDatabase() {
         });
     }, function (error) {
         if(error) return console.error(error);
-        async.map(allShows[0] ,extractTrakt);
+        async.mapSeries(allShows[0], extractTrakt, function(err, results){});
     });
 }
 
