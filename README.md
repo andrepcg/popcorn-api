@@ -2,8 +2,9 @@
 
 Scrape torrents from eztv and generate a local database accessible with an api compatible with popcorn time.
 
-#### TEST API Endpoint
-	http://nameless-ridge-7764.herokuapp.com
+#### Official API Endpoint
+	http://popcorn-api.com
+	http://popcorn-api.net
 
 ## Installation
 
