@@ -78,22 +78,22 @@ function extractShowInfo(show, callback) {
                             db.tvshows.update({ _id: show._id }, 
                                 { $set: { episodes: thisEpisodes, last_updated: +new Date()}},
                                 function(err, show) {
-                                    callback(err, null);
+                                    return callback(err, null);
                                 });
                         }
                         else {
-                            callback(null, show);
+                            return callback(null, show);
                         }
                     });
 
                 });
             } catch (err) {
                 console.log("Error:", err)
-                callback(null, show);
+                return callback(null, show);
             }
         }
 
-        callback(null, show);
+        return callback(null, show);
 
 
     });
@@ -131,17 +131,17 @@ function extractTrakt(show, callback) {
                     db.tvshows.insert(new_data, function(err, newDocs) {
                         show.imdb = data.imdb_id;
                         extractShowInfo(show, function(err, show) {
-                            callback(err, show);
+                            return callback(err, show);
                         });
                     });
                 } 
                 else {
-                    callback(null, show);
+                    return callback(null, show);
                 }
             })
         } catch (err) {
             console.log("Error:", err)
-            callback(null, show);
+            return callback(null, show);
         }
     }
     else {
@@ -153,11 +153,11 @@ function extractTrakt(show, callback) {
             show.imdb = doc.imdb_id;
             //TODO: Change this to just get new rating or something
             extractShowInfo(show, function(err, show) {
-                callback(err, show);
+                return callback(err, show);
             });
         }
         else {
-            callback(null, show);
+            return callback(null, show);
         }
     }
 });
@@ -173,7 +173,9 @@ function refreshDatabase() {
         });
     }, function (error) {
         if(error) return console.error(error);
-        async.mapSeries(allShows[0], extractTrakt, function(err, results){});
+        async.mapSeries(allShows[0], extractTrakt, function(err, results){
+            
+        });
     });
 }
 
@@ -184,6 +186,12 @@ function refreshDatabase() {
 server.get('/shows', function(req, res) {
     var byPage = 30;
     db.tvshows.find({}).sort({ year: -1 }).limit(byPage).exec(function (err, docs) {
+      res.json(202, docs);
+    });
+});
+
+server.get('/shows/all', function(req, res) {
+    db.tvshows.find({}).sort({ year: -1 }).exec(function (err, docs) {
       res.json(202, docs);
     });
 });
