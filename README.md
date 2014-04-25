@@ -35,5 +35,8 @@ We automatically generate the DB on start and we resync with eztv everyday at 00
 #### View shows updated since a time
 	http://localhost:5000/shows/updated/[since]
 
+#### Get All Shows (Can be slow)
+	http://localhost:5000/shows/all
+
 	
     
