@@ -44,18 +44,11 @@ function extractShowInfo(show, callback) {
                     for(var episodeData in seasonData){
 
                         episodeData = seasonData[episodeData];
-
-                        // we check if we have a torrent for this before we continue...
-                        // we need to make it compatible with our array
-                        
-                        // 01 , 02 , 03 or 14, 15 etc (2 numbers)
-
-                        var tempepisode = ("0" + episodeData.episode).slice(-2).toString();
-                        if (typeof(data[season]) != 'undefined' && typeof(data[season][tempepisode]) != 'undefined') {
+                        if (typeof(data[season]) != 'undefined' && typeof(data[season][episodeData.episode]) != 'undefined') {
 
                             // hardcode the 720 for this source
                             // TODO: Should add it from eztv_x
-                            data[season][tempepisode].format = "720";
+                            data[season][episodeData.episode].format = "720";
                             thisEpisode = {
                                 tvdb_id: episodeData.tvdb_id,
                                 season: episodeData.season,
@@ -63,7 +56,7 @@ function extractShowInfo(show, callback) {
                                 title: episodeData.title,
                                 torrents: []
                             };
-                            thisEpisode.torrents.push(data[season][tempepisode]);
+                            thisEpisode.torrents.push(data[season][episodeData.episode]);
                             thisEpisodes.push(thisEpisode);
 
                         }
