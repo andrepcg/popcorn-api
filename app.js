@@ -34,58 +34,56 @@ function extractShowInfo(show, callback) {
     eztv.getAllEpisodes(show, function(err, data) {
         thisShow = data;
 
+        if(!data) return callback(null, show);
         console.log("Looking for "+ show.show);
 
         // upate with right torrent link
-        for(var season in data){
-            try {
-                trakt.request('show', 'season', {title: imdb, season: season}, function(err, seasonData) {
+       async.each(Object.keys(data), function(season, cb) {
+               try {
+                   trakt.request('show', 'season', {title: imdb, season: season}, function(err, seasonData) {
+                       for(var episodeData in seasonData){
+                           episodeData = seasonData[episodeData];
+                           if (typeof(data[season]) != 'undefined' && typeof(data[season][episodeData.episode]) != 'undefined') {
 
-                    for(var episodeData in seasonData){
+                               // hardcode the 720 for this source
+                               // TODO: Should add it from eztv_x
+                               data[season][episodeData.episode].format = "720";
+                               thisEpisode = {
+                                   tvdb_id: episodeData.tvdb_id,
+                                   season: episodeData.season,
+                                   episode: episodeData.episode,
+                                   title: episodeData.title,
+                                   torrents: []
+                               };
+                               thisEpisode.torrents.push(data[season][episodeData.episode]);
+                               thisEpisodes.push(thisEpisode);
+                           }
+                       }
+                       cb();
+                   });
+               } catch (err) {
+                   console.log("Error:", err)
+                   cb();
+               }
+       },
+       function(err, res) {
+           // Only change "lastUpdated" date if there are new episodes
+           db.tvshows.findOne({imdb_id: show.imdb}, function(err, show) {
+               if(err) return console.error(err);
+               if(show.episodes != thisEpisodes) {
+                   db.tvshows.update({ _id: show._id },
+                       { $set: { episodes: thisEpisodes, last_updated: +new Date()}},
+                       function(err, show) {
+                           return callback(err, null);
+                       });
+               }
+               else {
+                   return callback(null, show);
+               }
+           });
 
-                        episodeData = seasonData[episodeData];
-                        if (typeof(data[season]) != 'undefined' && typeof(data[season][episodeData.episode]) != 'undefined') {
-
-                            // hardcode the 720 for this source
-                            // TODO: Should add it from eztv_x
-                            data[season][episodeData.episode].format = "720";
-                            thisEpisode = {
-                                tvdb_id: episodeData.tvdb_id,
-                                season: episodeData.season,
-                                episode: episodeData.episode,
-                                title: episodeData.title,
-                                torrents: []
-                            };
-                            thisEpisode.torrents.push(data[season][episodeData.episode]);
-                            thisEpisodes.push(thisEpisode);
-
-                        }
-
-                    }
-
-                    // Only change "lastUpdated" date if there are new episodes
-                    db.tvshows.findOne({imdb_id: show.imdb}, function(err, show) {
-                        if(err) return console.error(err);
-                        if(show.episodes != thisEpisodes) {
-                            db.tvshows.update({ _id: show._id }, 
-                                { $set: { episodes: thisEpisodes, last_updated: +new Date()}},
-                                function(err, show) {
-                                    return callback(err, null);
-                                });
-                        }
-                        else {
-                            return callback(null, show);
-                        }
-                    });
-
-                });
-            } catch (err) {
-                console.log("Error:", err)
-                return callback(null, show);
-            }
-        }
-
-        return callback(null, show);
+           return callback(null, show);
+       });
 
 
     });
@@ -166,7 +164,7 @@ function refreshDatabase() {
     }, function (error) {
         if(error) return console.error(error);
         async.mapSeries(allShows[0], extractTrakt, function(err, results){
-            
+
         });
     });
 }
