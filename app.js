@@ -39,7 +39,6 @@ function extractShowInfo(show, callback) {
         // upate with right torrent link
         for(var season in data){
             try {
-
                 trakt.request('show', 'season', {title: imdb, season: season}, function(err, seasonData) {
 
                     for(var episodeData in seasonData){
@@ -52,7 +51,7 @@ function extractShowInfo(show, callback) {
                         // 01 , 02 , 03 or 14, 15 etc (2 numbers)
 
                         var tempepisode = ("0" + episodeData.episode).slice(-2).toString();
-                        if (typeof(data[season]) != 'undefined' & typeof(data[season][tempepisode]) != 'undefined') {
+                        if (typeof(data[season]) != 'undefined' && typeof(data[season][tempepisode]) != 'undefined') {
 
                             // hardcode the 720 for this source
                             // TODO: Should add it from eztv_x
