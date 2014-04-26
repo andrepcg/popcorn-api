@@ -28,6 +28,7 @@ function extractShowInfo(show, callback) {
     var thisShow = {};
     var thisEpisodes = [];
     var thisEpisode = {};
+    var numSeasons = 0;
 
     var imdb = show.imdb;
 
@@ -39,6 +40,7 @@ function extractShowInfo(show, callback) {
 
         // upate with right torrent link
        async.each(Object.keys(data), function(season, cb) {
+               numSeasons++;
                try {
                    trakt.request('show', 'season', {title: imdb, season: season}, function(err, seasonData) {
                        for(var episodeData in seasonData){
@@ -72,7 +74,7 @@ function extractShowInfo(show, callback) {
                if(err) return console.error(err);
                if(show.episodes != thisEpisodes) {
                    db.tvshows.update({ _id: show._id },
-                       { $set: { episodes: thisEpisodes, last_updated: +new Date()}},
+                       { $set: { episodes: thisEpisodes, last_updated: +new Date(), num_seasons: numSeasons}},
                        function(err, show) {
                            return callback(err, null);
                        });
