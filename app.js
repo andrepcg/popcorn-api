@@ -118,7 +118,8 @@ function extractTrakt(show, callback) {
                         country: data.country,
                         network: data.network,
                         air_day: data.air_day,
-                        air_time: data.air_time
+                        air_time: data.air_time,
+                        num_seasons: 0
                     };
                     db.tvshows.insert(new_data, function(err, newDocs) {
                         show.imdb = data.imdb_id;
@@ -183,39 +184,39 @@ server.get('/shows', function(req, res) {
 });
 
 server.get('/shows/all', function(req, res) {
-    db.tvshows.find({}).sort({ year: -1 }).exec(function (err, docs) {
+    db.tvshows.find({num_seasons: { $gt: 0 }}).sort({ year: -1 }).exec(function (err, docs) {
       res.json(202, docs);
     });
 });
 
 server.get('/shows/:page', function(req, res) {
-    var page = req.params.page-1;    
+    var page = req.params.page-1;   
     var byPage = 30;
     var offset = page*byPage;
-    db.tvshows.find({}).sort({ year: -1 }).skip(offset).limit(byPage).exec(function (err, docs) {
+    db.tvshows.find({num_seasons: { $gt: 0 }}).sort({ year: -1 }).skip(offset).limit(byPage).exec(function (err, docs) {
       res.json(202, docs);
     });
 });
 
 server.get('/shows/last_updated', function(req, res) { 
     var byPage = 30;
-    db.tvshows.find({}).sort({ last_updated: -1 }).limit(byPage).exec(function (err, docs) {
+    db.tvshows.find({num_seasons: { $gt: 0 }}).sort({ last_updated: -1 }).limit(byPage).exec(function (err, docs) {
       res.json(202, docs);
     });
 });
 
 server.get('/shows/updated/:since', function(req, res) {
-    var since = req.params.since
-    db.tvshows.find({last_updated : {$gt: parseInt(since)}}, function(err, docs) {
+    var since = req.params.since;
+    db.tvshows.find({last_updated : {$gt: parseInt(since)},num_seasons: { $gt: 0 }}, function(err, docs) {
         res.json(202, docs);
     })
 })
 
 server.get('/shows/last_updated/:page', function(req, res) {
-    var page = req.params.page-1;    
+    var page = req.params.page-1;   
     var byPage = 30;
     var offset = page*byPage;
-    db.tvshows.find({}).sort({ last_updated: -1 }).skip(offset).limit(byPage).exec(function (err, docs) {
+    db.tvshows.find({num_seasons: { $gt: 0 }}).sort({ last_updated: -1 }).skip(offset).limit(byPage).exec(function (err, docs) {
       res.json(202, docs);
     });
 });
@@ -223,7 +224,7 @@ server.get('/shows/last_updated/:page', function(req, res) {
 server.get('/shows/search/:search', function(req, res) {
     var byPage = 30;
     var keywords = new RegExp(req.params.search.toLowerCase(),"gi");
-    db.tvshows.find({title: keywords}).sort({ last_updated: -1 }).limit(byPage).exec(function (err, docs) {
+    db.tvshows.find({title: keywords,num_seasons: { $gt: 0 }}).sort({ last_updated: -1 }).limit(byPage).exec(function (err, docs) {
       res.json(202, docs);
     });
 });
@@ -233,7 +234,7 @@ server.get('/shows/search/:search/:page', function(req, res) {
     var byPage = 30;
     var offset = page*byPage;    
     var keywords = new RegExp(req.params.search.toLowerCase(),"gi");
-    db.tvshows.find({title: keywords}).sort({ last_updated: -1 }).skip(offset).limit(byPage).exec(function (err, docs) {
+    db.tvshows.find({title: keywords,num_seasons: { $gt: 0 }}).sort({ last_updated: -1 }).skip(offset).limit(byPage).exec(function (err, docs) {
       res.json(202, docs);
     });
 });
