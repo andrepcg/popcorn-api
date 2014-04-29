@@ -21,6 +21,7 @@ var TTL = 1000 * 60 * 60 * 24;
  *  EXTRACT FUNCTIONS
  */
 
+var cache = {shows:  {error: 'still loading'}};
 
 function extractShowInfo(show, callback) {
 
@@ -166,8 +167,11 @@ function refreshDatabase() {
         });
     }, function (error) {
         if(error) return console.error(error);
-        async.mapSeries(allShows[0], extractTrakt, function(err, results){
-
+        async.mapLimit(allShows[0], 64, extractTrakt, function(err, results){
+            db.tvshows.find({num_seasons: { $gt: 0 }}).sort({ year: -1 }).exec(function (err, docs) {
+                console.log ('updating cache');
+                cache.shows = docs;
+            });
         });
     });
 }
