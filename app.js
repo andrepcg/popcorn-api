@@ -55,6 +55,7 @@ function extractShowInfo(show, callback) {
                                    season: episodeData.season,
                                    episode: episodeData.episode,
                                    title: episodeData.title,
+                                   overview: episodeData.overview,
                                    torrents: []
                                };
                                thisEpisode.torrents.push(data[season][episodeData.episode]);
