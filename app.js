@@ -56,6 +56,7 @@ function extractShowInfo(show, callback) {
                                    episode: episodeData.episode,
                                    title: episodeData.title,
                                    overview: episodeData.overview,
+                                   first_aired: episodeData.first_aired_utc,
                                    watched : {watched: false},
                                    torrents: []
                                };
