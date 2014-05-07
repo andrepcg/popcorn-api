@@ -9,7 +9,7 @@
     "restify": "*",
     "request": "*",
     "nedb": "~0.10.5",
-    "eztv_api_x": ">=0.0.8",
+    "eztv_api_x": ">=0.0.10",
     "cron": "*",
     "trakt": "0.0.6"
   },

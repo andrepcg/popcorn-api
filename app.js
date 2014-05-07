@@ -39,39 +39,40 @@ function extractShowInfo(show, callback) {
         console.log("Looking for "+ show.show);
 
         // upate with right torrent link
-       async.each(Object.keys(data), function(season, cb) {
-               numSeasons++;
-               try {
-                   trakt.request('show', 'season', {title: imdb, season: season}, function(err, seasonData) {
-                       for(var episodeData in seasonData){
-                           episodeData = seasonData[episodeData];
-                           if (typeof(data[season]) != 'undefined' && typeof(data[season][episodeData.episode]) != 'undefined') {
-
-                               // hardcode the 720 for this source
-                               // TODO: Should add it from eztv_x
-                               data[season][episodeData.episode].format = "720";
-                               thisEpisode = {
-                                   tvdb_id: episodeData.tvdb_id,
-                                   season: episodeData.season,
-                                   episode: episodeData.episode,
-                                   title: episodeData.title,
-                                   overview: episodeData.overview,
-                                   first_aired: episodeData.first_aired_utc,
-                                   watched : {watched: false},
-                                   torrents: []
-                               };
-                               thisEpisode.torrents.push(data[season][episodeData.episode]);
-                               thisEpisodes.push(thisEpisode);
-                           }
-                       }
-                       cb();
-                   });
-               } catch (err) {
-                   console.log("Error:", err)
-                   cb();
-               }
-       },
-       function(err, res) {
+        if(!data.dateBased) {
+          async.each(Object.keys(data), function(season, cb) {
+            numSeasons++;
+            try {
+              trakt.request('show', 'season', {title: imdb, season: season}, function(err, seasonData) {
+                for(var episodeData in seasonData){
+                  episodeData = seasonData[episodeData];
+                  if (typeof(data[season]) != 'undefined' && typeof(data[season][episodeData.episode]) != 'undefined') {
+                  // hardcode the 720 for this source
+                  // TODO: Should add it from eztv_x
+                  data[season][episodeData.episode].format = "720";
+                  thisEpisode = {
+                    tvdb_id: episodeData.tvdb_id,
+                    season: episodeData.season,
+                    episode: episodeData.episode,
+                    title: episodeData.title,
+                    overview: episodeData.overview,
+                    date_based: false,
+                    first_aired: episodeData.first_aired_utc,
+                    watched : {watched: false},
+                    torrents: []
+                  };
+                  thisEpisode.torrents.push(data[season][episodeData.episode]);
+                  thisEpisodes.push(thisEpisode);
+                }
+              }
+              cb();
+            });
+            } catch (err) {
+              console.log("Error:", err)
+              cb();
+            }
+          },
+          function(err, res) {
            // Only change "lastUpdated" date if there are new episodes
            db.tvshows.findOne({imdb_id: show.imdb}, function(err, show) {
                if(err) return console.error(err);
@@ -89,6 +90,64 @@ function extractShowInfo(show, callback) {
 
            return callback(null, show);
        });
+      }
+      else {
+        numSeasons = Object.keys(data).length;
+          trakt.request('show', 'summary', {title: imdb, extended: "full"}, function(err, show) {
+            if(!show) callback(null, show);
+            else {
+              var seasons = show.seasons;
+              async.each(seasons, function(season, cbs) {
+                var episodes = season.episodes;
+                async.each(episodes, function(episode, cbe){
+                  var aired = episode.first_aired_iso;
+                  if(aired){
+                    var year_aired = aired.substring(0, aired.indexOf("-"));
+                    var date_aired = aired.substring(aired.indexOf("-") + 1, aired.indexOf("T")).replace("-", "/");
+                    if(typeof(data[year_aired]) != 'undefined' && typeof(data[year_aired][date_aired]) != 'undefined')
+                    {
+                      data[year_aired][date_aired].format = "720";
+                      thisEpisode = {
+                        tvdb_id: episode.tvdb_id,
+                        season: episode.season,
+                        episode: episode.episode,
+                        title: episode.title,
+                        overview: episode.overview,
+                        first_aired: episode.first_aired_utc,
+                        date_based: true,
+                        year: year_aired,
+                        day_aired: date_aired,
+                        watched : {watched: false},
+                        torrents: []
+                      };
+                      thisEpisode.torrents.push(data[year_aired][date_aired]);
+                      thisEpisodes.push(thisEpisode);
+                    }
+                  }
+                  cbe();
+                },
+                function(err, res) {cbs()})
+              }, function(err, res) {
+             // Only change "lastUpdated" date if there are new episodes
+             db.tvshows.findOne({imdb_id: imdb}, function(err, show) {
+                 if(err) return console.error(err);
+                 if(show.episodes != thisEpisodes) {
+                     db.tvshows.update({ _id: show._id },
+                         { $set: { episodes: thisEpisodes, last_updated: +new Date(), num_seasons: numSeasons}},
+                         function(err, show) {
+                             return callback(err, null);
+                         });
+                 }
+                 else {
+                     return callback(null, show);
+                 }
+             });
+
+             return callback(null, show);
+            });
+}
+        });
+      }
 
 
     });
