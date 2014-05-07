@@ -122,6 +122,7 @@ function extractTrakt(show, callback) {
                         network: data.network,
                         air_day: data.air_day,
                         air_time: data.air_time,
+                        status: data.status,
                         num_seasons: 0
                     };
                     db.tvshows.insert(new_data, function(err, newDocs) {
