@@ -153,4 +153,144 @@ We automatically generate the DB on start and we resync with eztv everyday at 00
 }
 ```
 	
+## Sample Data provided by eztv_api_x
+```
+{ '1':
+   { '1':
+      { url: 'magnet:?xt=urn:btih:SJ4DX6NRO5CDE3CLDL2OLWCTEYRUFWQU&dn=Game.of.Thrones.S01E01.HDTV.XviD-FEVER&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '2':
+      { url: 'magnet:?xt=urn:btih:HYIUEHWR3MCCI4OYALDU55BX3KJO2SAU&dn=Game.of.Thrones.S01E02.The.Kingsroad.HDTV.XviD-FQM&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '3':
+      { url: 'magnet:?xt=urn:btih:PM5NL2SX6UCQNT5L6FUZFO2VZ7G7VBQX&dn=Game.of.Thrones.S01E03.Lord.Snow.HDTV.XviD-FQM&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '4':
+      { url: 'magnet:?xt=urn:btih:226YUN6KNTS5FG2YGNQQPRGU2P6RKHRE&dn=Game.of.Thrones.S01E04.Cripples.Bastards.and.Broken.Things.HDTV.XviD-FQM&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '5':
+      { url: 'magnet:?xt=urn:btih:CZBRGG4J423BBUAM74EY4GRMJH3KXWQT&dn=Game.of.Thrones.S01E05.The.Wolf.and.the.Lion.HDTV.XviD-FQM&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '6':
+      { url: 'magnet:?xt=urn:btih:5BWUH5EEB6V4Z36MDVN4MEV4CR4AYIFW&dn=Game.of.Thrones.S01E06.A.Golden.Crown.HDTV.XviD-FQM&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '7':
+      { url: 'magnet:?xt=urn:btih:KYHJ4LSKKX747QGC5IRVUEJQ7QYMNHGT&dn=Game.of.Thrones.S01E07.HDTV.XviD-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '9':
+      { url: 'magnet:?xt=urn:btih:WRQCFWMVZWRL77HME5XJBU55YSWAZQGI&dn=Game.of.Thrones.S01E09.Baelor.HDTV.XviD-FQM&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '10':
+      { url: 'magnet:?xt=urn:btih:WFKVIP6WCXAIJQWZWEFALO5N3KVN2KSK&dn=Game.of.Thrones.S01E10.Fire.and.Blood.HDTV.XviD-FQM&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 } },
+  '2':
+   { '2':
+      { url: 'magnet:?xt=urn:btih:TOXZK2GFUSDABYXP5W2S6EF73EYBQZ72&dn=Game.of.Thrones.S02E02.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '3':
+      { url: 'magnet:?xt=urn:btih:M4SX3F3F6756ID6AAKIOI6BH23J63P25&dn=Game.of.Thrones.S02E03.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '4':
+      { url: 'magnet:?xt=urn:btih:ITBOJ5NQRWB6WQA3Q4OCSFECFBPGT6RB&dn=Game.of.Thrones.S02E04.720p.HDTV.x264-AVS&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '5':
+      { url: 'magnet:?xt=urn:btih:U242CBQYQ6QO6S2XX36P5LP6BO3YKK54&dn=Game.of.Thrones.S02E05.720p.HDTV.x264-IMMERSE&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '6':
+      { url: 'magnet:?xt=urn:btih:NSUVBA7FS7YF3B2GPVUZQQ6ZEVKR6QY6&dn=Game.of.Thrones.S02E06.720p.HDTV.x264-2HD&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '7':
+      { url: 'magnet:?xt=urn:btih:K3FXFRDESERBLS23YGW6W57FUUEFNWEH&dn=Game.of.Thrones.S02E07.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '8':
+      { url: 'magnet:?xt=urn:btih:GSBWXXEUR2HKVJUUWVBDFAZR4MPGR5NF&dn=Game.of.Thrones.S02E08.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '9':
+      { url: 'magnet:?xt=urn:btih:32ORWWYQ327FQJQ2QRUYW53RQ3ODQYIW&dn=Game.of.Thrones.S02E09.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '10':
+      { url: 'magnet:?xt=urn:btih:PFDKQDQHRMMBMYZIUGFXCKYHZ7K6YYAN&dn=Game.of.Thrones.S02E10.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 } },
+  '3':
+   { '1':
+      { url: 'magnet:?xt=urn:btih:ZEG3TDC2VPTE3TL7OMGYC3TVKJBP766U&dn=Game.of.Thrones.S03E01.HDTV.x264-2HD&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '2':
+      { url: 'magnet:?xt=urn:btih:JENH3QBRXIG3ASZT43MNOXCBSI3FE4LH&dn=Game.of.Thrones.S03E02.HDTV.x264-2HD&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '3':
+      { url: 'magnet:?xt=urn:btih:F2VRW6OPLIVKZTERHJIYHM7KPISJJZPL&dn=Game.of.Thrones.S03E03.HDTV.x264-EVOLVE&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '4':
+      { url: 'magnet:?xt=urn:btih:EXWOJMKWNHZ47JDPNH67DHXOBR4I7ABN&dn=Game.of.Thrones.S03E04.HDTV.x264-EVOLVE&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '5':
+      { url: 'magnet:?xt=urn:btih:WMNQPD4ZSA4IPITQQWDMA3YCAMDQ66P4&dn=Game.of.Thrones.S03E05.HDTV.x264-2HD&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '6':
+      { url: 'magnet:?xt=urn:btih:QD7F6TW646HTRLW6L4RBHAXQTWV36LMP&dn=Game.of.Thrones.S03E06.HDTV.x264-2HD&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '7':
+      { url: 'magnet:?xt=urn:btih:U7GHUKS2C6PHIMPMPTO3OLBLYROXMTG5&dn=Game.of.Thrones.S03E07.HDTV.x264-2HD&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '8':
+      { url: 'magnet:?xt=urn:btih:2NRVTXIXLGL2233466MB6P6LFNA5CXUC&dn=Game.of.Thrones.S03E08.HDTV.x264-EVOLVE&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '9':
+      { url: 'magnet:?xt=urn:btih:SS33M4EV7USKP6KDOHFLAZWAMX63BJQX&dn=Game.of.Thrones.S03E09.720p.HDTV.x264-EVOLVE&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '10':
+      { url: 'magnet:?xt=urn:btih:NIFZAWMUUXTYEE2QVZZZGBIBOPGE3KEV&dn=Game.of.Thrones.S03E10.HDTV.x264-EVOLVE&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 } },
+  '4':
+   { '1':
+      { url: 'magnet:?xt=urn:btih:XSABXHMZOLCDFXWK7ZLECDYJFZO6CXVG&dn=Game.of.Thrones.S04E01.HDTV.x264-KILLERS&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '2':
+      { url: 'magnet:?xt=urn:btih:X3KCLLMMS37YMRPEM5DWFXEGYPGREPG6&dn=Game.of.Thrones.S04E02.HDTV.x264-2HD&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '3':
+      { url: 'magnet:?xt=urn:btih:YQR7ODHZYCGV3IKM6FFS5JJZI26Z46WM&dn=Game.of.Thrones.S04E03.HDTV.x264-KILLERS&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '4':
+      { url: 'magnet:?xt=urn:btih:OR6JVGD7YDEF3QNP4GE7VOFTV6GQ37L2&dn=Game.of.Thrones.S04E04.HDTV.x264-KILLERS&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 },
+     '5':
+      { url: 'magnet:?xt=urn:btih:LJRVY2CH4FPO6XYR34QFFX2SZY2TCIZB&dn=Game.of.Thrones.S04E05.HDTV.x264-KILLERS&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80',
+        seeds: 0,
+        peers: 0 } },
+  dateBased: false }
+```
     
