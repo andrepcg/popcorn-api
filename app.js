@@ -34,6 +34,8 @@ function extractShowInfo(show, callback) {
 
     eztv.getAllEpisodes(show, function(err, data) {
         thisShow = data;
+        
+        numSeasons = Object.keys(data).length;
 
         if(!data) return callback(null, show);
         console.log("Looking for "+ show.show);
@@ -41,7 +43,6 @@ function extractShowInfo(show, callback) {
         // upate with right torrent link
         if(!data.dateBased) {
           async.each(Object.keys(data), function(season, cb) {
-            numSeasons++;
             try {
               trakt.request('show', 'season', {title: imdb, season: season}, function(err, seasonData) {
                 for(var episodeData in seasonData){
@@ -92,7 +93,6 @@ function extractShowInfo(show, callback) {
        });
       }
       else {
-        numSeasons = Object.keys(data).length;
           trakt.request('show', 'summary', {title: imdb, extended: "full"}, function(err, show) {
             if(!show) callback(null, show);
             else {
