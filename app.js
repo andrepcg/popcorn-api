@@ -34,11 +34,12 @@ function extractShowInfo(show, callback) {
 
     eztv.getAllEpisodes(show, function(err, data) {
         thisShow = data;
-        
-        numSeasons = Object.keys(data).length;
 
         if(!data) return callback(null, show);
         console.log("Looking for "+ show.show);
+        
+        
+        numSeasons = Object.keys(data).length;
 
         // upate with right torrent link
         if(!data.dateBased) {
